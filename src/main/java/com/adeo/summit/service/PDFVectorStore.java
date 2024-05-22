@@ -8,7 +8,6 @@ import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +18,7 @@ public class PDFVectorStore {
 
     private final VectorStore vectorStore;
 
-    public PDFVectorStore(EmbeddingClient embeddingClient, ResourceLoader resourceLoader, ResourceProperties resourceProperties) {
+    public PDFVectorStore(EmbeddingClient embeddingClient, ResourceProperties resourceProperties) {
         this.vectorStore = new SimpleVectorStore(embeddingClient);
         for (Resource resource : resourceProperties.getResources()) {
             PagePdfDocumentReader reader = new PagePdfDocumentReader(resource);
