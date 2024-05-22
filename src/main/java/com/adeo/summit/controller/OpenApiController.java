@@ -18,7 +18,12 @@ public class OpenApiController {
 	}
 
 	@GetMapping("/ai/call")
-	public ResponseEntity<String> completion(@RequestParam(value = "message") String message) {
+	public ResponseEntity<String> call(@RequestParam(value = "message") String message) {
 		return ResponseEntity.ok(openApiService.call(message));
+	}
+
+	@GetMapping("/ai/callWithContext")
+	public ResponseEntity<String> callWithContext(@RequestParam(value = "message") String message) {
+		return ResponseEntity.ok(openApiService.callWithContext(message));
 	}
 }
