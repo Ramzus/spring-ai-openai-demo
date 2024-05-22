@@ -1,5 +1,6 @@
 package com.adeo.summit.service;
 
+import com.adeo.summit.config.ResourceProperties;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.embedding.EmbeddingClient;
 import org.springframework.ai.reader.pdf.PagePdfDocumentReader;
@@ -18,14 +19,14 @@ public class PDFVectorStore {
 
     private final VectorStore vectorStore;
 
-
-    public PDFVectorStore(EmbeddingClient embeddingClient, ResourceLoader resourceLoader) {
+    public PDFVectorStore(EmbeddingClient embeddingClient, ResourceLoader resourceLoader, ResourceProperties resourceProperties) {
         this.vectorStore = new SimpleVectorStore(embeddingClient);
-        Resource kitSFPPDF = resourceLoader.getResource("classpath:KIT_SFP.pdf");
-        PagePdfDocumentReader reader = new PagePdfDocumentReader(kitSFPPDF);
-        TokenTextSplitter splitter = new TokenTextSplitter();
-        List<Document> documents = splitter.apply(reader.get());
-        this.vectorStore.accept(documents);
+        for (Resource resource : resourceProperties.getResources()) {
+            PagePdfDocumentReader reader = new PagePdfDocumentReader(resource);
+            TokenTextSplitter splitter = new TokenTextSplitter();
+            List<Document> documents = splitter.apply(reader.get());
+            this.vectorStore.accept(documents);
+        }
     }
 
     public String getDocumentsFromVectorStore(String message) {
