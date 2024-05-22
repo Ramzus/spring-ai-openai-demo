@@ -1,4 +1,4 @@
-package org.springframework.ai.openai.samples.helloworld;
+package com.adeo.summit;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
