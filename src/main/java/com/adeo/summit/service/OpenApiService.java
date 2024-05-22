@@ -5,6 +5,7 @@ import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
+import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,14 +26,16 @@ public class OpenApiService {
         return chatClient.call(message);
     }
 
-    public String callWithContext(String message) {
+    public String callWithContext(String message, String model) {
         String inlineDocument = PDFVectorStore.getDocumentsFromVectorStore(message);
 
         Message context = new SystemPromptTemplate("Based on the following: {documents}").createMessage(Map.of("documents", inlineDocument));
         UserMessage userMessage = new UserMessage(message);
 
 
-        return chatClient.call(new Prompt(List.of(context, userMessage))).getResult().getOutput().getContent();
+        return chatClient.call(new Prompt(List.of(context, userMessage), OpenAiChatOptions.builder()
+                .withModel(model)
+                .build())).getResult().getOutput().getContent();
     }
 
 }
