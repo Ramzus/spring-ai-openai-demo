@@ -17,8 +17,8 @@ public class OpenApiController {
 		this.openApiService = openApiService;
 	}
 
-	@GetMapping("/ai/simple")
-	public ResponseEntity<String> completion(@RequestParam(value = "message", defaultValue = "Tell me what day is it ?") String message) {
+	@GetMapping("/ai/call")
+	public ResponseEntity<String> completion(@RequestParam(value = "message") String message) {
 		return ResponseEntity.ok(openApiService.call(message));
 	}
 }
