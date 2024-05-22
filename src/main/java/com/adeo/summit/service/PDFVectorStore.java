@@ -21,8 +21,8 @@ public class PDFVectorStore {
 
     public PDFVectorStore(EmbeddingClient embeddingClient, ResourceLoader resourceLoader) {
         this.vectorStore = new SimpleVectorStore(embeddingClient);
-        Resource kitSFPPDF = resourceLoader.getResource("classpath:KIT_SFP.pdf");
-        PagePdfDocumentReader reader = new PagePdfDocumentReader(kitSFPPDF);
+        Resource PDF = resourceLoader.getResource("classpath:SFP.pdf");
+        PagePdfDocumentReader reader = new PagePdfDocumentReader(PDF);
         TokenTextSplitter splitter = new TokenTextSplitter();
         List<Document> documents = splitter.apply(reader.get());
         this.vectorStore.accept(documents);
