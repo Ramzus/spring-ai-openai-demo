@@ -1,5 +1,6 @@
 package com.adeo.summit.service;
 
+import com.adeo.summit.config.ChatBotProperties;
 import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
@@ -16,10 +17,12 @@ public class OpenApiService {
 
     private final ChatClient chatClient;
     private final PDFVectorStore PDFVectorStore;
+    private final ChatBotProperties chatBotProperties;
 
-    public OpenApiService(ChatClient chatClient, PDFVectorStore PDFVectorStore) {
+    public OpenApiService(ChatClient chatClient, PDFVectorStore PDFVectorStore, ChatBotProperties chatBotProperties) {
         this.chatClient = chatClient;
         this.PDFVectorStore = PDFVectorStore;
+        this.chatBotProperties = chatBotProperties;
     }
 
     public String call(String message) {
@@ -29,11 +32,11 @@ public class OpenApiService {
     public String callWithContext(String message, String model) {
         String inlineDocument = PDFVectorStore.getDocumentsFromVectorStore(message);
 
-        Message context = new SystemPromptTemplate("Based on the following: {documents}").createMessage(Map.of("documents", inlineDocument));
         UserMessage userMessage = new UserMessage(message);
 
+        Message systemContext = new SystemPromptTemplate(chatBotProperties.getPromptTemplate()).createMessage(Map.of("name", chatBotProperties.getName(), "documents", inlineDocument));
 
-        return chatClient.call(new Prompt(List.of(context, userMessage), OpenAiChatOptions.builder()
+        return chatClient.call(new Prompt(List.of(systemContext, userMessage), OpenAiChatOptions.builder()
                 .withModel(model)
                 .build())).getResult().getOutput().getContent();
     }
