@@ -23,7 +23,7 @@ public class OpenApiController {
 	}
 
 	@GetMapping("/ai/callWithContext")
-	public ResponseEntity<String> callWithContext(@RequestParam(value = "message") String message, @RequestParam(value = "model") String model) {
+	public ResponseEntity<String> callWithContext(@RequestParam(value = "message") String message, @RequestParam(value = "model", defaultValue = "gpt-4o") String model) {
 		return ResponseEntity.ok(openApiService.callWithContext(message, model));
 	}
 }
