@@ -9,6 +9,7 @@ public class ChatBotProperties {
 
     private String name;
     private String promptTemplate;
+    private String userContext;
 
     public String getName() {
         return name;
@@ -24,6 +25,14 @@ public class ChatBotProperties {
 
     public void setPromptTemplate(String promptTemplate) {
         this.promptTemplate = promptTemplate;
+    }
+
+    public String getUserContext() {
+        return userContext;
+    }
+
+    public void setUserContext(String userContext) {
+        this.userContext = userContext;
     }
 
 }
