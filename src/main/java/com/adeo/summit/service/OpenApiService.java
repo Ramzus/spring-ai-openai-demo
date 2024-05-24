@@ -45,7 +45,7 @@ public class OpenApiService {
                 .withModel(model)
                 .build()));
 
-        contextStore.addContext(contextId, List.of(userContext.getContent(), chatResponse.getResult().getOutput().getContent()));
+        contextStore.addContext(contextId, List.of(userMessage.getContent(), chatResponse.getResult().getOutput().getContent()));
 
         return  chatResponse.getResult().getOutput().getContent();
     }
