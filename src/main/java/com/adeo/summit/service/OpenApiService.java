@@ -1,5 +1,6 @@
 package com.adeo.summit.service;
 
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
@@ -16,13 +17,12 @@ public class OpenApiService {
     private final ChatClient chatClient;
     private final PDFVectorStore PDFVectorStore;
 
-    public OpenApiService(ChatClient chatClient, PDFVectorStore PDFVectorStore) {
-        this.chatClient = chatClient;
-        this.PDFVectorStore = PDFVectorStore;
+    public OpenApiService(ChatClient.Builder chatClient) {
+        this.chatClient = chatClient.build();
     }
 
     public String call(String message) {
-        return chatClient.call(message);
+        return chatClient.prompt().user(message).call().chatResponse().getResult().getOutput().getContent();
     }
 
     public String callWithContext(String message) {
