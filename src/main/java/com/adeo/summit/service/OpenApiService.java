@@ -20,9 +20,11 @@ public class OpenApiService {
 
     private final ChatClient chatClient;
     private final PDFVectorStore PDFVectorStore;
+    private final WebhookCall webhookCall;
 
-    public OpenApiService(ChatClient.Builder chatClientBuilder, PDFVectorStore PDFVectorStore, ChatBotProperties chatBotProperties) {
+    public OpenApiService(ChatClient.Builder chatClientBuilder, PDFVectorStore PDFVectorStore, ChatBotProperties chatBotProperties, WebhookCall webhookCall) {
         this.PDFVectorStore = PDFVectorStore;
+        this.webhookCall = webhookCall;
         InMemoryChatMemory chatMemory = new InMemoryChatMemory();
 
         Message systemTemplate = new SystemPromptTemplate(chatBotProperties.getPromptTemplate()).createMessage(Map.of("name", chatBotProperties.getName()));
@@ -47,6 +49,7 @@ public class OpenApiService {
                         advisor ->
                                 advisor.param(CHAT_MEMORY_CONVERSATION_ID_KEY, contextId)
                                         .advisors(new QuestionAnswerAdvisor(PDFVectorStore.getVectorStore(), searchRequest)))
+                .function("sendGreetings", "send greetings to user and callback a webhook", webhookCall)
                 .call()
                 .chatResponse();
 
