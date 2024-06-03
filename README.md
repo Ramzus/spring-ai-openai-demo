@@ -1,11 +1,12 @@
 # Spring AI with OpenAI
 
 This project contains a web service that will accept HTTP GET requests at
-`http://localhost:8080/ai/simple`.
+- `http://localhost:8080/ai/call`.
+  - this endpoint is directly calling the OpenAI ChatGPT Service without any Spring AI implementation.
+- `http://localhost:8080/ai/callWithContext`.
+  - this endpoint is directly calling the OpenAI ChatGPT Service with a system default response template, documents retrieved from a vector store and stored in memory user conversation historic.
 
-There is optional `message` parameter whose default value is "Tell me a joke".
-
-The response to the request is from the OpenAI ChatGPT Service.
+For these two endpoints, there is a `message` parameter which must be supplied in order to use them.
 
 ## Prerequisites
 
@@ -31,27 +32,15 @@ However, you can find more information on setting started in the [Spring AI refe
 
 ## Access the endpoint
 
-To get a response to the default request of "Tell me a joke"
-
-```shell 
-curl localhost:8080/ai/simple
-```
-
-A sample response is 
-
-```text
-Sure, here's a classic one for you:
-
-Why don't scientists trust atoms?
-
-Because they make up everything!
-```
-
-Now using the `message` request parameter
+To get a response by using the `message` request parameter
 ```shell
-curl --get  --data-urlencode 'message=Tell me a joke about a cow.' localhost:8080/ai/simple 
+curl --get  --data-urlencode 'message=Tell me a joke about a cow.' localhost:8080/ai/call 
 ```
+or with context
 
+```shell
+curl --get  --data-urlencode 'message=Tell me a joke about a cow.' localhost:8080/ai/callWithContext 
+```
 A sample response is
 
 ```text
@@ -62,5 +51,31 @@ Because it wanted to see the mooooon!
 
 Alternatively use the [httpie](https://httpie.io/) client
 ```shell
-http localhost:8080/ai/simple message=='Tell me a joke about a cow.'
+http localhost:8080/ai/callWithContext message=='Tell me a joke about a cow.'
+```
+
+## Using chainlit as a chatbot frontend
+
+Chainlit is available in the project at the following location : ``` src/main/resources/front ```
+To use it, you need to have Python3 installed in your system.
+
+To install chainlit (prerequisite) :
+```shell
+pip install chainlit
+```
+
+To run chainlit :
+```shell
+cd src/main/resources/front
+chainlit run app.py -w
+```
+
+## Using pgvector as a vector store
+
+In order to use pgvector as a vector store, you need to have a PostgreSQL database running with the pgvector extension installed.
+For that, I personally recommend using the following docker image : [ankane/pgvector](https://hub.docker.com/r/ankane/pgvector)
+
+For example :
+```shell
+docker run -it --rm --name postgres -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres ankane/pgvector
 ```
