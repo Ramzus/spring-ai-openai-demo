@@ -17,13 +17,8 @@ public class OpenApiController {
 		this.openApiService = openApiService;
 	}
 
-	@GetMapping("/ai/call")
-	public ResponseEntity<String> call(@RequestParam(value = "message") String message) {
-		return ResponseEntity.ok(openApiService.call(message));
-	}
-
 	@GetMapping("/ai/callWithContext")
-	public ResponseEntity<String> callWithContext(@RequestParam(value = "message") String message, @RequestParam(value = "model", defaultValue = "gpt-4o") String model, @RequestParam(value = "contextId", defaultValue = "none") String contextId) {
-		return ResponseEntity.ok(openApiService.callWithContext(message, model, contextId));
+	public ResponseEntity<String> callWithContext(@RequestParam(value = "message") String message, @RequestParam(value = "contextId", defaultValue = "none") String contextId) {
+		return ResponseEntity.ok(openApiService.callWithContext(message, contextId));
 	}
 }
