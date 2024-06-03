@@ -49,7 +49,7 @@ public class OpenApiService {
                         advisor ->
                                 advisor.param(CHAT_MEMORY_CONVERSATION_ID_KEY, contextId)
                                         .advisors(new QuestionAnswerAdvisor(PDFVectorStore.getVectorStore(), searchRequest)))
-                .function("sendGreetings", "send greetings to user and callback a webhook", webhookCall)
+                .function("createIncident", "create incident for an application", webhookCall)
                 .call()
                 .chatResponse();
 
