@@ -19,7 +19,7 @@ public class WebhookCall implements Function<WebhookCall.Request, WebhookCall.Re
     public record Request(String firstName, String lastName, String problemDescription, String severity) {
     }
 
-    public record Response(String greeting) {
+    public record Response(String incidentCreatedMessage) {
     }
 
 }
