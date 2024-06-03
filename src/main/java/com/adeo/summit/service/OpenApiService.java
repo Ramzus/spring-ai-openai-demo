@@ -2,6 +2,8 @@ package com.adeo.summit.service;
 
 import com.adeo.summit.config.ChatBotProperties;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.PromptChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.InMemoryChatMemory;
@@ -20,6 +22,7 @@ public class OpenApiService {
 
     private final ChatClient chatClient;
     private final PDFVectorStore PDFVectorStore;
+    private final ChatBotProperties chatBotProperties;
 
     public OpenApiService(ChatClient.Builder chatClientBuilder, PDFVectorStore PDFVectorStore, ChatBotProperties chatBotProperties) {
         this.PDFVectorStore = PDFVectorStore;
@@ -31,12 +34,15 @@ public class OpenApiService {
                 .defaultSystem(systemContext.getContent())
                 .defaultAdvisors(new PromptChatMemoryAdvisor(chatMemory))
                 .build();
+    public String call(String message) {
+        return chatClient.prompt().user(message).call().chatResponse().getResult().getOutput().getContent();
     }
 
     public String callWithContext(String message, String contextId) {
 
         SearchRequest searchRequest = SearchRequest.query(message);
 
+        Message systemTemplate = new SystemPromptTemplate(chatBotProperties.getPromptTemplate()).createMessage(Map.of("name", chatBotProperties.getName()));
         ChatResponse
                 chatResponse = chatClient.prompt()
                 .user(message)
@@ -45,7 +51,14 @@ public class OpenApiService {
                 .call()
                 .chatResponse();
 
+        return chatClient.prompt()
+                .user(message)
+                .system(systemTemplate.getContent())
+                .advisors(new QuestionAnswerAdvisor(PDFVectorStore.getVectorStore(), searchRequest))
+                .call()
+                .chatResponse().getResult().getOutput().getContent();
         return chatResponse.getResult().getOutput().getContent();
     }
+
 
 }
