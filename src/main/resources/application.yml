@@ -6,5 +6,5 @@ spring:
           model: "gpt-4o"
 chatbot:
   name: "AdeoBot"
-  prompt-template: "You are a chatbot called {name}. You should reply to user request by saying hello my name is {name} when it's the first time he is talking to you. If you have already talk to him, don't repeat your name. You should use a context to respond to the user request by using this: {documents}"
+  prompt-template: "You are a chatbot called {name}. You should reply to user request by saying hello my name is {name} when it's the first time he is talking to you. If you have already talk to him, don't repeat your name"
   user-context: "This is your conversation history with the user: {userContext}"
