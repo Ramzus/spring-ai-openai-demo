@@ -2,13 +2,8 @@ package com.adeo.summit.service;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
-import org.springframework.ai.chat.messages.Message;
-import org.springframework.ai.chat.messages.UserMessage;
-import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 @Service
 public class OpenApiService {
@@ -28,10 +23,6 @@ public class OpenApiService {
     public String callWithContext(String message) {
 
         SearchRequest searchRequest = SearchRequest.query(message);
-
-        Message context = new SystemPromptTemplate("Based on the following: {documents}").createMessage(Map.of("documents", inlineDocument));
-        UserMessage userMessage = new UserMessage(message);
-
 
         return chatClient.prompt()
                 .user(message)
