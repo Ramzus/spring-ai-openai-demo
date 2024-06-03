@@ -1,7 +1,7 @@
 package com.adeo.summit.service;
 
 import org.springframework.ai.document.Document;
-import org.springframework.ai.embedding.EmbeddingClient;
+import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.ai.reader.pdf.PagePdfDocumentReader;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
@@ -19,8 +19,8 @@ public class PDFVectorStore {
     private final VectorStore vectorStore;
 
 
-    public PDFVectorStore(EmbeddingClient embeddingClient, ResourceLoader resourceLoader) {
-        this.vectorStore = new SimpleVectorStore(embeddingClient);
+    public PDFVectorStore(EmbeddingModel embeddingModel, ResourceLoader resourceLoader) {
+        this.vectorStore = new SimpleVectorStore(embeddingModel);
         Resource PDF = resourceLoader.getResource("classpath:SFP.pdf");
         PagePdfDocumentReader reader = new PagePdfDocumentReader(PDF);
         TokenTextSplitter splitter = new TokenTextSplitter();
@@ -28,9 +28,8 @@ public class PDFVectorStore {
         this.vectorStore.accept(documents);
     }
 
-    public String getDocumentsFromVectorStore(String message) {
-        List<Document> documents = this.vectorStore.similaritySearch(message);
-        return documents.stream().map(Document::getContent).collect(Collectors.joining(System.lineSeparator()));
+    public VectorStore getVectorStore() {
+        return vectorStore;
     }
 
 }
