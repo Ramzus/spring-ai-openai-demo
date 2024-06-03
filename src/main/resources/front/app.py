@@ -1,7 +1,7 @@
 import chainlit as cl
 import requests
 
-endpoint = 'http://localhost:8080/ai/simple'
+endpoint = 'http://localhost:8080/ai/call'
 
 @cl.on_message
 async def main(message: cl.Message):
