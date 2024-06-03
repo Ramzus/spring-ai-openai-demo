@@ -3,15 +3,12 @@ package com.adeo.summit.service;
 import com.adeo.summit.config.ChatBotProperties;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
-import org.springframework.ai.vectorstore.SearchRequest;
-import com.adeo.summit.config.ChatBotProperties;
-import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.messages.Message;
-import org.springframework.ai.chat.messages.UserMessage;
-import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
-import org.springframework.ai.openai.OpenAiChatOptions;
+import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Service
 public class OpenApiService {
@@ -33,10 +30,12 @@ public class OpenApiService {
     public String callWithContext(String message) {
 
         SearchRequest searchRequest = SearchRequest.query(message);
-        Message systemContext = new SystemPromptTemplate(chatBotProperties.getPromptTemplate()).createMessage(Map.of("name", chatBotProperties.getName(), "documents", inlineDocument));
+
+        Message systemTemplate = new SystemPromptTemplate(chatBotProperties.getPromptTemplate()).createMessage(Map.of("name", chatBotProperties.getName()));
 
         return chatClient.prompt()
                 .user(message)
+                .system(systemTemplate.getContent())
                 .advisors(new QuestionAnswerAdvisor(PDFVectorStore.getVectorStore(), searchRequest))
                 .call()
                 .chatResponse().getResult().getOutput().getContent();
