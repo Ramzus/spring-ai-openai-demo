@@ -25,27 +25,33 @@ public class OpenApiService {
         this.PDFVectorStore = PDFVectorStore;
         InMemoryChatMemory chatMemory = new InMemoryChatMemory();
 
-        Message systemContext = new SystemPromptTemplate(chatBotProperties.getPromptTemplate()).createMessage(Map.of("name", chatBotProperties.getName()));
+        Message systemTemplate = new SystemPromptTemplate(chatBotProperties.getPromptTemplate()).createMessage(Map.of("name", chatBotProperties.getName()));
 
         this.chatClient = chatClientBuilder
-                .defaultSystem(systemContext.getContent())
+                .defaultSystem(systemTemplate.getContent())
                 .defaultAdvisors(new PromptChatMemoryAdvisor(chatMemory))
                 .build();
     }
 
-    public String callWithContext(String message, String contextId) {
+    public String call(String message) {
+        return chatClient.prompt().user(message).call().chatResponse().getResult().getOutput().getContent();
+    }
 
+    public String callWithContext(String message, String contextId) {
         SearchRequest searchRequest = SearchRequest.query(message);
 
         ChatResponse
                 chatResponse = chatClient.prompt()
                 .user(message)
                 .advisors(
-                        advisor -> advisor.param(CHAT_MEMORY_CONVERSATION_ID_KEY, contextId).advisors(new QuestionAnswerAdvisor(PDFVectorStore.getVectorStore(), searchRequest)))
+                        advisor ->
+                                advisor.param(CHAT_MEMORY_CONVERSATION_ID_KEY, contextId)
+                                        .advisors(new QuestionAnswerAdvisor(PDFVectorStore.getVectorStore(), searchRequest)))
                 .call()
                 .chatResponse();
 
         return chatResponse.getResult().getOutput().getContent();
     }
+
 
 }
