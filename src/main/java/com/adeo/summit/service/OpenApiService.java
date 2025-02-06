@@ -2,7 +2,6 @@ package com.adeo.summit.service;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
-import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,13 +21,11 @@ public class OpenApiService {
 
     public String callWithContext(String message) {
 
-        SearchRequest searchRequest = SearchRequest.query(message);
-
         return chatClient.prompt()
                 .user(message)
-                .advisors(new QuestionAnswerAdvisor(PDFVectorStore.getVectorStore(), searchRequest))
+                .advisors(new QuestionAnswerAdvisor(PDFVectorStore.getVectorStore()))
                 .call()
-                .chatResponse().getResult().getOutput().getContent();
+                .chatResponse().getResult().getOutput().getText();
     }
 
 
