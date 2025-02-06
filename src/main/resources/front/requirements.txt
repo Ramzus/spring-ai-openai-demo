@@ -1,1 +1,1 @@
-chainlit==1.1.202
+chainlit==2.1.1

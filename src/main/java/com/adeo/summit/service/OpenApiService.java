@@ -17,7 +17,7 @@ public class OpenApiService {
     }
 
     public String call(String message) {
-        return chatClient.prompt().user(message).call().chatResponse().getResult().getOutput().getContent();
+        return chatClient.prompt().user(message).call().chatResponse().getResult().getOutput().getText();
     }
 
     public String callWithContext(String message) {
