@@ -8,7 +8,6 @@ import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
-import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -28,17 +27,16 @@ public class OpenApiService {
         Message systemTemplate = new SystemPromptTemplate(chatBotProperties.getPromptTemplate()).createMessage(Map.of("name", chatBotProperties.getName()));
 
         this.chatClient = chatClientBuilder
-                .defaultSystem(systemTemplate.getContent())
+                .defaultSystem(systemTemplate.getText())
                 .defaultAdvisors(new PromptChatMemoryAdvisor(chatMemory))
                 .build();
     }
 
     public String call(String message) {
-        return chatClient.prompt().user(message).call().chatResponse().getResult().getOutput().getContent();
+        return chatClient.prompt().user(message).call().chatResponse().getResult().getOutput().getText();
     }
 
     public String callWithContext(String message, String contextId) {
-        SearchRequest searchRequest = SearchRequest.query(message);
 
         ChatResponse
                 chatResponse = chatClient.prompt()
@@ -46,11 +44,11 @@ public class OpenApiService {
                 .advisors(
                         advisor ->
                                 advisor.param(CHAT_MEMORY_CONVERSATION_ID_KEY, contextId)
-                                        .advisors(new QuestionAnswerAdvisor(PDFVectorStore.getVectorStore(), searchRequest)))
+                                        .advisors(new QuestionAnswerAdvisor(PDFVectorStore.getVectorStore())))
                 .call()
                 .chatResponse();
 
-        return chatResponse.getResult().getOutput().getContent();
+        return chatResponse.getResult().getOutput().getText();
     }
 
 
