@@ -19,7 +19,7 @@ public class PDFVectorStore {
 
 
     public PDFVectorStore(EmbeddingModel embeddingModel, ResourceProperties resourceProperties) {
-        this.vectorStore = new SimpleVectorStore(embeddingModel);
+        this.vectorStore = SimpleVectorStore.builder(embeddingModel).build();
         for (Resource resource : resourceProperties.getResources()) {
             PagePdfDocumentReader reader = new PagePdfDocumentReader(resource);
             TokenTextSplitter splitter = new TokenTextSplitter();
