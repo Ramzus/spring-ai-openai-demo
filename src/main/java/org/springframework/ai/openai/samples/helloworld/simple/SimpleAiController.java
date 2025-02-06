@@ -19,6 +19,6 @@ public class SimpleAiController {
 
 	@GetMapping("/ai/simple")
 	public ResponseEntity<String> completion(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message) {
-		return ResponseEntity.ok(chatClient.prompt().user(message).call().chatResponse().getResult().getOutput().getContent());
+		return ResponseEntity.ok(chatClient.prompt().user(message).call().chatResponse().getResult().getOutput().getText());
 	}
 }
