@@ -5,7 +5,6 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
-import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -24,21 +23,19 @@ public class OpenApiService {
     }
 
     public String call(String message) {
-        return chatClient.prompt().user(message).call().chatResponse().getResult().getOutput().getContent();
+        return chatClient.prompt().user(message).call().chatResponse().getResult().getOutput().getText();
     }
 
     public String callWithContext(String message) {
-
-        SearchRequest searchRequest = SearchRequest.query(message);
 
         Message systemTemplate = new SystemPromptTemplate(chatBotProperties.getPromptTemplate()).createMessage(Map.of("name", chatBotProperties.getName()));
 
         return chatClient.prompt()
                 .user(message)
-                .system(systemTemplate.getContent())
-                .advisors(new QuestionAnswerAdvisor(PDFVectorStore.getVectorStore(), searchRequest))
+                .system(systemTemplate.getText())
+                .advisors(new QuestionAnswerAdvisor(PDFVectorStore.getVectorStore()))
                 .call()
-                .chatResponse().getResult().getOutput().getContent();
+                .chatResponse().getResult().getOutput().getText();
     }
 
 
