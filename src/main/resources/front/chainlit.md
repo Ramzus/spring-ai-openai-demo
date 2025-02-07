@@ -1,1 +1,1 @@
-# Adeo Chatbot - Powered by Chainlit! 🚀🤖
+# Leroy Merlin Chatbot - Powered by Chainlit! 🚀🤖
