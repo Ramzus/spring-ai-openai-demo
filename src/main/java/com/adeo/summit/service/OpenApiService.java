@@ -8,6 +8,7 @@ import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
+import org.springframework.ai.tool.function.FunctionToolCallback;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -47,7 +48,7 @@ public class OpenApiService {
                         advisor ->
                                 advisor.param(CHAT_MEMORY_CONVERSATION_ID_KEY, contextId)
                                         .advisors(new QuestionAnswerAdvisor(PDFVectorStore.getVectorStore())))
-                .function("createIncident", "create incident for an application", webhookCall)
+                .tools(FunctionToolCallback.builder("createIncident", webhookCall).description("create incident for an application").inputType(WebhookCall.Request.class).build())
                 .call()
                 .chatResponse();
 
