@@ -4,15 +4,15 @@ spring:
     username: postgres
     password: postgres
   ai:
-    openai:
-      chat:
-        options:
-          model: "gpt-4o"
     vectorstore:
       pgvector:
         index-type: HNSW
         distance-type: COSINE_DISTANCE
         dimension: 1536
+    openai:
+      chat:
+        options:
+          model: "gpt-4o"
 chatbot:
   name: "Leroy Merlin Bot"
-  prompt-template: "You are a chatbot called {name}. You should reply to user request by saying hello my name is {name} and after that, respond to his request"
+  prompt-template: "You are a chatbot called {name}. You should reply to user request by saying hello my name is {name}, but only when you respond to the user for the first time, and after that, respond to his request"
